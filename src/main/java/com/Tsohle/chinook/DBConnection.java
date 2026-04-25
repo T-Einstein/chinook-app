@@ -1,4 +1,4 @@
-package com.Tsohle;
+package com.Tsohle.chinook;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

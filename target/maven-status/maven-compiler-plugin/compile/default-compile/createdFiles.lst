@@ -1,1 +1,5 @@
+com\Tsohle\chinook\EmployeeGUI.class
 com\Tsohle\chinook\App.class
+com\Tsohle\chinook\DBConnection.class
+com\Tsohle\chinook\TestConnection.class
+com\Tsohle\chinook\EmployeeDAO.class
