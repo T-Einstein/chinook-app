@@ -7,7 +7,7 @@ public class EmployeeDAO {
 ArrayList<Object[]> list = new ArrayList<>();
 
         String sql = """
-                SELECT e.FirstName, e.Last, e.Title, e.City, e.Country, e.Phone,
+                SELECT e.FirstName, e.LastName, e.Title, e.City, e.Country, e.Phone,
                     CONCAT(s.FirstName,' ', s.LastName) AS Supervisor
                 FROM Employee e
                 LEFT JOIN Employee s ON e.ReportsTo = s.EmployeeId
@@ -18,6 +18,9 @@ ArrayList<Object[]> list = new ArrayList<>();
         ResultSet rs = stmt.executeQuery(sql);){
 
         while(rs.next()){
+
+             System.out.println("Found employee: " + rs.getString("FirstName"));
+
             list.add(new Object[]{
                 rs.getString("FirstName"),
                 rs.getString("LastName"),
