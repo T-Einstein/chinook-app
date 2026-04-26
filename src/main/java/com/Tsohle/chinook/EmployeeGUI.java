@@ -8,8 +8,21 @@ import java.util.ArrayList;
 public class EmployeeGUI extends JFrame {
     JTable table;
     DefaultTableModel model; 
+    JTextField search;
 
     public EmployeeGUI(){
+
+
+        search = new JTextField(20);
+
+        JPanel topPanel = new JPanel();
+        topPanel.add(new JLabel("Search:"));
+        topPanel.add(search);
+
+        add(topPanel, BorderLayout.NORTH);
+
+
+
         setTitle("Emloyees");
         setSize(800,400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,9 +38,26 @@ public class EmployeeGUI extends JFrame {
         add(new JScrollPane(table), BorderLayout.CENTER);
 
         loadEmployees();
+        search.addKeyListener(new java.awt.event.KeyAdapter() {
+        public void keyReleased(java.awt.event.KeyEvent e) {
+        searchEmployees();
+    }
+});
 
         setVisible(true);
     }
+
+    private void searchEmployees(){
+        String keyword = search.getText();
+        model.setRowCount(0);
+
+        var data = EmployeeDAO.searchEmployees(keyword);
+
+        for(Object[] row : data){
+            model.addRow(row);
+        }
+    }
+    
 
      private void loadEmployees() {
         model.setRowCount(0); 
