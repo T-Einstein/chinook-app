@@ -3,8 +3,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class TrackDAO {
-    public static ArrayList<String[]> getAlbums(){
-        ArrayList<String[]> list = new ArrayList<>();
+    public static ArrayList<Item> getAlbums(){
+        ArrayList<Item> list = new ArrayList<>();
 
         String sql = """
                 SELECT AlbumId, Title 
@@ -17,10 +17,10 @@ public class TrackDAO {
         ){
             while(rs.next()){
 
-                list.add(new String[]{
-                    rs.getString("AlbumId"), 
+                list.add(new Item(
+                    rs.getInt("AlbumId"), 
                     rs.getString("Title")
-                     });
+                ));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -31,8 +31,8 @@ public class TrackDAO {
     }
 
 
-    public static ArrayList<String[]> getGenres(){
-        ArrayList<String[]> list = new ArrayList<>();
+    public static ArrayList<Item> getGenres(){
+        ArrayList<Item> list = new ArrayList<>();
 
         String sql = """
                 SELECT GenreId, Name 
@@ -45,10 +45,10 @@ public class TrackDAO {
         ){
             while(rs.next()){
 
-                list.add(new String[]{
-                    rs.getString("GenreId"), 
+                list.add(new Item(
+                    rs.getInt("GenreId"), 
                     rs.getString("Name")
-                     });
+                     ));
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -58,8 +58,8 @@ public class TrackDAO {
         return list;
     }
 
-    public static ArrayList<String[]> getMedia(){
-        ArrayList<String[]> list = new ArrayList<>();
+    public static ArrayList<Item> getMedia(){
+        ArrayList<Item> list = new ArrayList<>();
 
         String sql = """
                 SELECT MediaTypeId, Name 
@@ -72,10 +72,10 @@ public class TrackDAO {
         ){
             while(rs.next()){
 
-                list.add(new String[]{
-                    rs.getString("MediaTypeId"), 
+                list.add(new Item(
+                    rs.getInt("MediaTypeId"), 
                     rs.getString("Name")
-                     });
+                ));
             }
         }catch(Exception e){
             e.printStackTrace();

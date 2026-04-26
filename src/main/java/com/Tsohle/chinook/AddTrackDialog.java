@@ -1,104 +1,84 @@
 package com.Tsohle.chinook;
 
-import java.util.ArrayList;
 import javax.swing.*;
-
 import java.awt.*;
 
-public class AddTrackDialog extends JDialog{
+public class AddTrackDialog extends JDialog {
 
-    JTextField trackNameField; 
-    JComboBox<String[]> albumBox; 
-    JComboBox<String[]> genreBox;
-    JComboBox<String[]> mediaTypeBox;
+    JTextField trackNameField;
+    JComboBox<Item> albumBox;
+    JComboBox<Item> genreBox;
+    JComboBox<Item> mediaTypeBox;
 
-    public AddTrackDialog(JFrame parent){
+    public AddTrackDialog(TracksGUI parent) {
         super(parent, "Add Track", true);
 
-        setSize(400,300);
-        setLayout(new GridLayout(5,2));
+        setSize(450, 320);
+        setLocationRelativeTo(parent);          // centres the dialog
 
-        trackNameField = new  JTextField();
-        albumBox = new JComboBox<String[]>();
-        genreBox = new JComboBox<String[]>();
-        mediaTypeBox = new JComboBox<String[]>();
+        // Use BoxLayout instead of GridLayout
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
+        // INPUT FIELD
+        trackNameField = new JTextField(20);
 
-        add(new JLabel("Track Name"));
-        add(trackNameField);
+        // DROPDOWNS
+        albumBox     = new JComboBox<>();
+        genreBox     = new JComboBox<>();
+        mediaTypeBox = new JComboBox<>();
 
-        add(new JLabel("Album"));
-        add(albumBox);
+        // LOAD DATA
+        for (Item a : TrackDAO.getAlbums())  albumBox.addItem(a);
+        for (Item g : TrackDAO.getGenres())  genreBox.addItem(g);
+        for (Item m : TrackDAO.getMedia())   mediaTypeBox.addItem(m);
 
-        add(new JLabel("Genre"));
-        add(genreBox);
+        // BUILD ROWS
+        panel.add(makeRow("Track Name", trackNameField));
+        panel.add(Box.createVerticalStrut(8));
+        panel.add(makeRow("Album",      albumBox));
+        panel.add(Box.createVerticalStrut(8));
+        panel.add(makeRow("Genre",      genreBox));
+        panel.add(Box.createVerticalStrut(8));
+        panel.add(makeRow("Media Type", mediaTypeBox));
+        panel.add(Box.createVerticalStrut(15));
 
-        add(new JLabel("Media Type"));
-        add(mediaTypeBox);
-
-        ArrayList<String[]> albums = TrackDAO.getAlbums();
-        for (String[] a : albums) {
-            albumBox.addItem(a);
-        }
-
-        ArrayList<String[]> genres = TrackDAO.getGenres();
-        for (String[] a : genres) {
-            genreBox.addItem(a);
-        }
-
-        ArrayList<String[]> medias = TrackDAO.getMedia();
-        for (String[] a : medias) {
-            mediaTypeBox.addItem(a);
-        }
-
-        albumBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
-    new JLabel(value[1])
-);
-
-genreBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
-    new JLabel(value[1])
-);
-
-mediaTypeBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
-    new JLabel(value[1])
-);
-       
-
+        // SAVE BUTTON
         JButton saveButton = new JButton("Save");
+        saveButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-       saveButton.addActionListener(e -> {
+        saveButton.addActionListener(e -> {
+            String name  = trackNameField.getText().trim();
+            Item album   = (Item) albumBox.getSelectedItem();
+            Item genre   = (Item) genreBox.getSelectedItem();
+            Item media   = (Item) mediaTypeBox.getSelectedItem();
 
-    String name = trackNameField.getText();
+            if (name.isEmpty() || album == null || genre == null || media == null) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields");
+                return;
+            }
 
+            TrackDAO.insertTrack(name, album.getId(), genre.getId(), media.getId());
+            JOptionPane.showMessageDialog(this, "Track added successfully!");
+            parent.loadTracks();
+            dispose();
+        });
 
-    String[] album = (String[]) albumBox.getSelectedItem();
-    String[] genre = (String[]) genreBox.getSelectedItem();
-    String[] media = (String[]) mediaTypeBox.getSelectedItem();
+        panel.add(saveButton);
+        add(panel);
 
-  
-    int albumId = Integer.parseInt(album[0]);
-    int genreId = Integer.parseInt(genre[0]);
-    int mediaId = Integer.parseInt(media[0]);
-
-    // 4. Call DAO.insertTrack(...)
-    TrackDAO.insertTrack(name, albumId, genreId, mediaId);
-
-    // feedback
-    JOptionPane.showMessageDialog(this, "Track added successfully!");
-
-    // 5. Close dialog
-    dispose();
-
-     
-    });
-
-
-
-        add(saveButton);
-
-
-        setVisible(true);
+         
     }
 
-    
+    // Helper to create a label + field row
+    private JPanel makeRow(String labelText, JComponent field) {
+        JPanel row = new JPanel(new BorderLayout(10, 0));
+        JLabel label = new JLabel(labelText);
+        label.setPreferredSize(new Dimension(90, 25));
+        field.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        row.add(label, BorderLayout.WEST);
+        row.add(field, BorderLayout.CENTER);
+        return row;
+    }
 }

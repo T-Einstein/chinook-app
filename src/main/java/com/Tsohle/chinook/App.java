@@ -6,5 +6,6 @@ package com.Tsohle.chinook;
 public class App {
     public static void main(String[] args) {
         new EmployeeGUI();
+        new TracksGUI();
     }
 }
