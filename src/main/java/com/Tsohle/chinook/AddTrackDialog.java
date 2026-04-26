@@ -1,16 +1,16 @@
 package com.Tsohle.chinook;
-import java.sql.*; 
+
 import java.util.ArrayList;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 
 public class AddTrackDialog extends JDialog{
 
     JTextField trackNameField; 
-    JComboBox<String> albumBox; 
-    JComboBox<String> genreBox;
-    JComboBox<String> mediaTypeBox;
+    JComboBox<String[]> albumBox; 
+    JComboBox<String[]> genreBox;
+    JComboBox<String[]> mediaTypeBox;
 
     public AddTrackDialog(JFrame parent){
         super(parent, "Add Track", true);
@@ -19,9 +19,9 @@ public class AddTrackDialog extends JDialog{
         setLayout(new GridLayout(5,2));
 
         trackNameField = new  JTextField();
-        albumBox = new JComboBox<>();
-        genreBox = new JComboBox<>();
-        mediaTypeBox = new JComboBox<>();
+        albumBox = new JComboBox<String[]>();
+        genreBox = new JComboBox<String[]>();
+        mediaTypeBox = new JComboBox<String[]>();
 
 
         add(new JLabel("Track Name"));
@@ -36,41 +36,61 @@ public class AddTrackDialog extends JDialog{
         add(new JLabel("Media Type"));
         add(mediaTypeBox);
 
-        ArrayList<String> albums = TracksDAO.getAlbums();
-        for (String a : albums) {
+        ArrayList<String[]> albums = TrackDAO.getAlbums();
+        for (String[] a : albums) {
             albumBox.addItem(a);
         }
 
-        ArrayList<String> genres = TracksDAO.getGenres();
-        for (String a : genres) {
+        ArrayList<String[]> genres = TrackDAO.getGenres();
+        for (String[] a : genres) {
             genreBox.addItem(a);
         }
 
-        ArrayList<String> medias = TracksDAO.getMedia();
-        for (String a : medias) {
+        ArrayList<String[]> medias = TrackDAO.getMedia();
+        for (String[] a : medias) {
             mediaTypeBox.addItem(a);
         }
 
+        albumBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
+    new JLabel(value[1])
+);
+
+genreBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
+    new JLabel(value[1])
+);
+
+mediaTypeBox.setRenderer((list, value, index, isSelected, cellHasFocus) ->
+    new JLabel(value[1])
+);
        
 
         JButton saveButton = new JButton("Save");
 
-        saveButton.addActionListener(e -> {
+       saveButton.addActionListener(e -> {
 
-            String trackName = trackNameField.getText();
-            String album = (String) albumBox.getSelectedItem();
-            String genre = (String) genreBox.getSelectedItem();
-            String media = (String) mediaTypeBox.getSelectedItem();
+    String name = trackNameField.getText();
 
-             if (trackName.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Track name required");
-                    return;
-                }
 
-            TracksDAO.insertTrack(trackName, album, genre, media);
+    String[] album = (String[]) albumBox.getSelectedItem();
+    String[] genre = (String[]) genreBox.getSelectedItem();
+    String[] media = (String[]) mediaTypeBox.getSelectedItem();
 
-            dispose(); 
-        });
+  
+    int albumId = Integer.parseInt(album[0]);
+    int genreId = Integer.parseInt(genre[0]);
+    int mediaId = Integer.parseInt(media[0]);
+
+    // 4. Call DAO.insertTrack(...)
+    TrackDAO.insertTrack(name, albumId, genreId, mediaId);
+
+    // feedback
+    JOptionPane.showMessageDialog(this, "Track added successfully!");
+
+    // 5. Close dialog
+    dispose();
+
+     
+    });
 
 
 
@@ -79,4 +99,6 @@ public class AddTrackDialog extends JDialog{
 
         setVisible(true);
     }
+
+    
 }
