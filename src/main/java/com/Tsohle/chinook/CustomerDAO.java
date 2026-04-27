@@ -1,8 +1,5 @@
 package com.Tsohle.chinook;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.*; 
 
@@ -89,5 +86,35 @@ public static void deleteCustomer(int id) {
     } catch (Exception e) {
         e.printStackTrace();
     }
+}
+
+public static ArrayList<Object[]> getInactiveCustomers() {
+    ArrayList<Object[]> list = new ArrayList<>();
+
+    String sql = """
+        SELECT c.FirstName, c.Email
+        FROM Customer c
+        LEFT JOIN Invoice i ON c.CustomerId = i.CustomerId
+        GROUP BY c.CustomerId
+        HAVING MAX(i.InvoiceDate) IS NULL
+        OR MAX(i.InvoiceDate) < DATE_SUB(NOW(), INTERVAL 2 YEAR)
+    """;
+
+    try (Connection conn = DBConnection.getConnection();
+         Statement stmt = conn.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+
+        while (rs.next()) {
+            list.add(new Object[]{
+                rs.getString("FirstName"),
+                rs.getString("Email")
+            });
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
 }
 }

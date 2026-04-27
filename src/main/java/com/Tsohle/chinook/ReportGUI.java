@@ -5,20 +5,38 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ReportGUI {
-    JTable reportTable = new JTable();
+public class ReportGUI extends JFrame {
 
-public void loadReport() {
-    ArrayList<Object[]> data = ReportDAO.getGenreRevenue();
+    JTable reportTable;
 
-    DefaultTableModel model = new DefaultTableModel(
-        new String[]{"Genre", "Revenue"}, 0
-    );
+    public ReportGUI() {
 
-    for (Object[] row : data) {
-        model.addRow(row);
+        setTitle("Genre Revenue Report");
+        setSize(600, 400);
+        setLayout(new BorderLayout());
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        reportTable = new JTable();
+
+        add(new JScrollPane(reportTable), BorderLayout.CENTER);
+
+        loadReport();
+
+        setVisible(true);
     }
 
-    reportTable.setModel(model);
-}
+    public void loadReport() {
+
+        ArrayList<Object[]> data = ReportDAO.getGenreRevenue();
+
+        DefaultTableModel model = new DefaultTableModel(
+            new String[]{"Genre", "Revenue"}, 0
+        );
+
+        for (Object[] row : data) {
+            model.addRow(row);
+        }
+
+        reportTable.setModel(model);
+    }
 }
