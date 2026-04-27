@@ -5,6 +5,7 @@ com\Tsohle\chinook\App.class
 com\Tsohle\chinook\CustomerGUI.class
 com\Tsohle\chinook\ReportDAO.class
 com\Tsohle\chinook\TracksGUI.class
+com\Tsohle\chinook\CustomerRecommendationsGUI.class
 com\Tsohle\chinook\EmployeeDAO.class
 com\Tsohle\chinook\ReportGUI.class
 com\Tsohle\chinook\TrackDAO.class
@@ -13,3 +14,4 @@ com\Tsohle\chinook\EmployeeGUI.class
 com\Tsohle\chinook\AddTrackDialog.class
 com\Tsohle\chinook\InactiveCustomersGUI.class
 com\Tsohle\chinook\TestConnection.class
+com\Tsohle\chinook\CustomerRecommendationDAO.class

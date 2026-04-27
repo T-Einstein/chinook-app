@@ -9,6 +9,7 @@ public class App {
         new TracksGUI();
         new ReportGUI();
         new CustomerGUI();
+        new CustomerRecommendationsGUI();
         new InactiveCustomersGUI();
     }
 }
