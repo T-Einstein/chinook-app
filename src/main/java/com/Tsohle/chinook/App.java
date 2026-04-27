@@ -8,6 +8,7 @@ public class App {
         new EmployeeGUI();
         new TracksGUI();
         new ReportGUI();
-        
+        new CustomerGUI();
+        new InactiveCustomersGUI();
     }
 }

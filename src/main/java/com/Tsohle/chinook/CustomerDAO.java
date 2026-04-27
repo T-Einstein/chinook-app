@@ -92,12 +92,15 @@ public static ArrayList<Object[]> getInactiveCustomers() {
     ArrayList<Object[]> list = new ArrayList<>();
 
     String sql = """
-        SELECT c.FirstName, c.Email
-        FROM Customer c
-        LEFT JOIN Invoice i ON c.CustomerId = i.CustomerId
-        GROUP BY c.CustomerId
-        HAVING MAX(i.InvoiceDate) IS NULL
-        OR MAX(i.InvoiceDate) < DATE_SUB(NOW(), INTERVAL 2 YEAR)
+   SELECT 
+    c.FirstName AS Name,
+    c.Email AS Email
+FROM Customer c
+LEFT JOIN Invoice i ON c.CustomerId = i.CustomerId
+GROUP BY c.CustomerId, c.FirstName, c.Email
+HAVING 
+    MAX(i.InvoiceDate) IS NULL
+    OR MAX(i.InvoiceDate) < DATE_SUB(NOW(), INTERVAL 1 YEAR)
     """;
 
     try (Connection conn = DBConnection.getConnection();
@@ -106,14 +109,16 @@ public static ArrayList<Object[]> getInactiveCustomers() {
 
         while (rs.next()) {
             list.add(new Object[]{
-                rs.getString("FirstName"),
+                rs.getString("Name"),
                 rs.getString("Email")
             });
+            System.out.println(rs.getString("Name"));
         }
 
     } catch (Exception e) {
         e.printStackTrace();
     }
+    System.out.println("Inactive count: " + list.size());
 
     return list;
 }

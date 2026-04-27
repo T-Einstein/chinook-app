@@ -63,7 +63,7 @@ public class InactiveCustomersGUI extends JFrame {
         table.setModel(model);
     }
 
-    // ===== SEARCH ALL CUSTOMERS =====
+
     public void searchCustomers() {
 
         String keyword = searchField.getText().toLowerCase();
